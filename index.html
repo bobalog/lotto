@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>로또 추천 + 오늘의 명언</title>
+  <title>🎀 로또 추천 + 오늘의 명언</title>
 
-  <!-- 마비노기체(리본코어 감성) -->
   <style>
+    /* ✅ 리본코어 폰트: 마비노기 */
     @font-face {
       font-family: 'MabinogiClassicR';
       src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2207-01@1.0/MabinogiClassicR.woff2') format('woff2');
@@ -16,207 +16,351 @@
     }
 
     :root{
-      --radius: 18px;
-      --border: 2px solid #222;
+      --main: #FBCA30;   /* ✅ 태윤 메인컬러 */
+      --ink: #1c1c1c;
+      --paper: #fff;
+      --shadow: rgba(0,0,0,.10);
+      --border: 2px solid var(--ink);
+      --radius: 22px;
+
+      /* 리본코어 포인트 */
+      --pink: #ffb7d9;
+      --mint: #b9f2e8;
+      --lav:  #d8c6ff;
+      --sky:  #bfe3ff;
     }
 
+    *{ box-sizing: border-box; }
+
+    /* ✅ 전체 배경: 땡땡이 + 중앙정렬 */
     body{
+      margin:0;
+      min-height: 100vh;
+      display:grid;
+      place-items:center;
+      padding: 18px;
+
       font-family: 'MabinogiClassicR', system-ui, sans-serif;
-      margin: 0;
-      padding: 24px;
-      background: #faf7ff;
-      color: #111;
+      color: var(--ink);
+
+      background:
+        radial-gradient(circle at 12px 12px, rgba(0,0,0,.08) 2px, transparent 2.5px) 0 0/28px 28px,
+        radial-gradient(circle at 12px 12px, rgba(251,202,48,.25) 3px, transparent 3.5px) 14px 14px/28px 28px,
+        linear-gradient(180deg, #fff8dc 0%, #ffffff 45%, #fff1fb 100%);
     }
 
-    .wrap{
-      max-width: 720px;
-      margin: 0 auto;
-      display: grid;
-      gap: 16px;
+    /* ✅ 창모드 느낌: 작은 앱 창 카드 */
+    .window{
+      width: min(420px, 96vw);
+      background: var(--paper);
+      border: var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 0 var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ✅ 상단 윈도우 바 */
+    .titlebar{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: var(--border);
+      background:
+        linear-gradient(90deg, rgba(255,183,217,.55), rgba(185,242,232,.45), rgba(216,198,255,.45));
+      position: relative;
+    }
+
+    .dots{
+      display:flex;
+      gap: 6px;
+      margin-right: 4px;
+    }
+    .dot{
+      width: 12px; height: 12px;
+      border-radius: 999px;
+      border: 2px solid var(--ink);
+      box-shadow: 0 4px 0 rgba(0,0,0,.08);
+    }
+    .dot:nth-child(1){ background: var(--pink); }
+    .dot:nth-child(2){ background: var(--mint); }
+    .dot:nth-child(3){ background: var(--main); }
+
+    .apptitle{
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      user-select:none;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+
+    /* ✅ 리본 이미지(외부 파일 없이 SVG를 배경으로) */
+    .ribbon{
+      position:absolute;
+      right: 10px;
+      top: 8px;
+      width: 56px;
+      height: 28px;
+      transform: rotate(8deg);
+      opacity: .95;
+      filter: drop-shadow(0 4px 0 rgba(0,0,0,.10));
+      pointer-events:none;
+    }
+
+    .content{
+      padding: 14px;
+      display:grid;
+      gap: 12px;
     }
 
     .card{
-      background: #fff;
       border: var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: 0 8px 0 rgba(0,0,0,0.06);
+      border-radius: 18px;
+      padding: 12px 12px;
+      background: #fff;
+      box-shadow: 0 10px 0 rgba(0,0,0,.06);
     }
 
-    h1{
-      margin: 0 0 6px;
-      font-size: 28px;
-      letter-spacing: -0.5px;
+    .h{
+      margin: 0;
+      font-size: 16px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
     }
 
     .sub{
-      margin: 0;
-      opacity: 0.8;
-      font-size: 14px;
+      margin: 6px 0 0;
+      font-size: 13px;
+      opacity: .82;
+      line-height: 1.45;
     }
 
-    button{
-      font-family: inherit;
+    /* ✅ 메인 버튼 (태윤 컬러 #FBCA30) */
+    .btn{
+      width: 100%;
       border: var(--border);
       border-radius: 999px;
-      padding: 12px 16px;
+      padding: 12px 14px;
+      cursor:pointer;
+      font-family: inherit;
       font-size: 16px;
-      cursor: pointer;
-      background: #fff3ff;
-      box-shadow: 0 6px 0 rgba(0,0,0,0.08);
-      transition: transform 0.06s ease;
+
+      background: var(--main);
+      box-shadow: 0 10px 0 rgba(0,0,0,.10);
+      transition: transform .06s ease;
     }
+    .btn:active{ transform: translateY(2px); }
 
-    button:active{ transform: translateY(2px); }
-
-    .row{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .meta{
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: .75;
     }
 
     .balls{
-      margin-top: 12px;
+      margin-top: 10px;
       display:flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center; /* ✅ 가운데 정렬 */
     }
 
+    /* ✅ 로또 공: 귀염 뽀작 */
     .ball{
       width: 54px; height: 54px;
       border-radius: 999px;
       border: var(--border);
       display:grid;
       place-items:center;
-      font-weight: 700;
-      background: #fff;
-      user-select: none;
+      font-weight: 800;
+      user-select:none;
+      box-shadow: 0 8px 0 rgba(0,0,0,.10);
+      position: relative;
+      overflow: hidden;
+    }
+    /* 하이라이트 */
+    .ball::after{
+      content:"";
+      position:absolute;
+      width: 70%;
+      height: 70%;
+      top: -18%;
+      left: -12%;
+      background: rgba(255,255,255,.55);
+      border-radius: 999px;
+      transform: rotate(-20deg);
     }
 
+    /* ✅ “번호마다 색깔 지정” (국내 로또 컬러 규칙) */
+    /* 1~10: 노랑 / 11~20: 파랑 / 21~30: 빨강 / 31~40: 회색 / 41~45: 초록 */
+    .c1 { background:#FBCA30; }  /* 노랑(메인) */
+    .c2 { background:#59A8FF; }  /* 파랑 */
+    .c3 { background:#FF6B6B; }  /* 빨강 */
+    .c4 { background:#B7B7B7; }  /* 회색 */
+    .c5 { background:#64D889; }  /* 초록 */
+
+    /* ✅ 명언 */
     .quote{
       margin-top: 10px;
       line-height: 1.6;
-      font-size: 16px;
+      font-size: 15px;
       white-space: pre-wrap;
+      text-align: center;
+    }
+    .quoteMeta{
+      text-align:center;
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: .75;
     }
 
-    .meta{
-      margin-top: 8px;
-      font-size: 13px;
-      opacity: 0.75;
+    /* 하단 귀여운 리본 라인 */
+    .footerStripe{
+      height: 12px;
+      border-top: var(--border);
+      background:
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,183,217,.65),
+          rgba(255,183,217,.65) 10px,
+          rgba(216,198,255,.55) 10px,
+          rgba(216,198,255,.55) 20px,
+          rgba(185,242,232,.55) 20px,
+          rgba(185,242,232,.55) 30px
+        );
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>🎯 로또 추천 + 오늘의 명언</h1>
-      <p class="sub">버튼 한 번 누르면 6개 번호 추천 + 명언이 매번 새로 바뀌어요 ✨</p>
-      <div class="row" style="margin-top:12px;">
-        <button id="btn">번호 뽑기 + 명언 업데이트</button>
-        <span id="status" class="meta"></span>
+  <div class="window">
+    <div class="titlebar">
+      <div class="dots" aria-hidden="true">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <div class="apptitle">🎀 로또 추천기 · 명언 뽑기</div>
+
+      <!-- 리본 SVG -->
+      <svg class="ribbon" viewBox="0 0 120 60" aria-hidden="true">
+        <path d="M22 30c-12 0-18-10-18-18S10 0 22 0c10 0 16 6 20 12C46 6 52 0 62 0c12 0 18 10 18 18s-6 18-18 18c-10 0-16-6-20-12-4 6-10 12-20 12z" fill="#ffb7d9" stroke="#1c1c1c" stroke-width="4"/>
+        <circle cx="42" cy="26" r="7" fill="#fff" stroke="#1c1c1c" stroke-width="4"/>
+        <path d="M78 30c16 0 28 8 38 20-18 2-30-4-40-12-6 10-16 16-34 14 12-10 20-18 36-22z" fill="#b9f2e8" stroke="#1c1c1c" stroke-width="4"/>
+      </svg>
+    </div>
+
+    <div class="content">
+      <button id="btn" class="btn">✨ 로또 6개 + 오늘의 명언 뽑기</button>
+      <div id="status" class="meta" style="text-align:center;"></div>
+
+      <div class="card">
+        <p class="h">🎱 추천 로또 번호</p>
+        <p class="sub">중복 없이 6개! 공 색은 번호 구간별로 자동 지정돼요 🫧</p>
+        <div class="balls" id="balls"></div>
+        <div class="meta" id="lottoMeta" style="text-align:center;"></div>
+      </div>
+
+      <div class="card">
+        <p class="h">📜 오늘의 명언</p>
+        <p class="sub">버튼 누를 때마다 랜덤으로 바뀌어요 💫</p>
+        <div class="quote" id="quote">버튼을 눌러 명언을 뽑아보자 🙂</div>
+        <div class="quoteMeta" id="quoteMeta"></div>
       </div>
     </div>
 
-    <div class="card">
-      <h2 style="margin:0;font-size:18px;">🎱 추천 로또 번호 6개</h2>
-      <div class="balls" id="balls"></div>
-      <div class="meta" id="lottoMeta"></div>
-    </div>
-
-    <div class="card">
-      <h2 style="margin:0;font-size:18px;">📜 오늘의 명언</h2>
-      <div class="quote" id="quote">버튼을 눌러 명언을 받아보세요 🙂</div>
-      <div class="meta" id="quoteMeta"></div>
-    </div>
+    <div class="footerStripe"></div>
   </div>
 
   <script>
-    // ✅ 1) 로또 추출: 1~45 중복 없이 6개
+    // ✅ 로또 6개 (1~45, 중복 없이)
     function drawLotto() {
       const set = new Set();
-      while (set.size < 6) {
-        set.add(Math.floor(Math.random() * 45) + 1);
-      }
-      return Array.from(set).sort((a,b) => a-b);
+      while (set.size < 6) set.add(Math.floor(Math.random() * 45) + 1);
+      return Array.from(set).sort((a,b)=>a-b);
     }
 
-    function renderBalls(nums) {
+    // ✅ 번호 구간에 따라 공 색 클래스 결정
+    function colorClass(n){
+      if (n <= 10) return "c1";
+      if (n <= 20) return "c2";
+      if (n <= 30) return "c3";
+      if (n <= 40) return "c4";
+      return "c5";
+    }
+
+    function renderBalls(nums){
       const wrap = document.getElementById("balls");
       wrap.innerHTML = "";
-      nums.forEach(n => {
+      nums.forEach(n=>{
         const div = document.createElement("div");
-        div.className = "ball";
+        div.className = `ball ${colorClass(n)}`;
         div.textContent = n;
         wrap.appendChild(div);
       });
     }
 
-    // ✅ 2) 명언: API 시도 → 실패 시 로컬(내장) 명언
+    function nowStamp(){
+      const d = new Date();
+      const pad = (x)=>String(x).padStart(2,"0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // ✅ 명언: API 시도 → 실패 시 내장
     const localQuotes = [
       { content: "오늘의 한 걸음이 내일의 나를 만든다.", author: "익명" },
       { content: "완벽보다 꾸준함이 더 강하다.", author: "익명" },
       { content: "작게 시작해도 괜찮아. 멈추지만 않으면 돼.", author: "익명" },
       { content: "남과 비교하지 말고, 어제의 나와 비교하자.", author: "익명" },
-      { content: "할 수 있는 만큼만이 아니라, 될 때까지 해보자.", author: "익명" },
       { content: "불안은 준비 신호다. 준비하면 불안이 작아진다.", author: "익명" },
-      { content: "기회는 준비된 사람에게 ‘인식’된다.", author: "익명" },
-      { content: "지금의 선택이 습관이 되고, 습관이 인생이 된다.", author: "익명" }
-      // 👉 여기에 계속 추가 가능 (100개 넣어도 가벼움!)
+      { content: "지금의 선택이 습관이 되고, 습관이 인생이 된다.", author: "익명" },
+      { content: "오늘은 내가 나를 믿어주는 날.", author: "익명" },
+      { content: "작은 성취를 모으면 큰 자신감이 된다.", author: "익명" }
     ];
 
-    function pickLocalQuote() {
-      const q = localQuotes[Math.floor(Math.random() * localQuotes.length)];
+    function pickLocalQuote(){
+      const q = localQuotes[Math.floor(Math.random()*localQuotes.length)];
       return { content: q.content, author: q.author, source: "local" };
     }
 
-    // Quotable: 랜덤 영문 명언 (무료)
-    async function fetchQuoteFromAPI() {
-      // api.quotable.io/random 형태로 널리 사용됨 :contentReference[oaicite:1]{index=1}
+    async function fetchQuoteFromAPI(){
       const url = "https://api.quotable.io/random";
       const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) throw new Error("API 응답 실패");
+      if(!res.ok) throw new Error("API_FAIL");
       const data = await res.json();
-      return { content: data.content, author: data.author || "Unknown", source: "api:quotable" };
+      return { content: data.content, author: data.author || "Unknown", source: "api" };
     }
 
-    function renderQuote(q) {
+    function renderQuote(q){
       document.getElementById("quote").textContent = `“${q.content}”`;
       document.getElementById("quoteMeta").textContent =
-        `— ${q.author}   ·   출처: ${q.source === "local" ? "내장(오프라인)" : "Quotable API"}`;
+        `— ${q.author} · ${q.source === "api" ? "Quotable" : "내장(오프라인)"}`;
     }
 
-    function nowStamp() {
-      const d = new Date();
-      const pad = (n) => String(n).padStart(2, "0");
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    // ✅ 3) 버튼 동작: 로또 + 명언 동시 업데이트
-    async function runAll() {
+    async function runAll(){
       const status = document.getElementById("status");
-      status.textContent = "업데이트 중…";
+      status.textContent = "뽑는 중… 🎀";
 
-      // 로또
       const nums = drawLotto();
       renderBalls(nums);
       document.getElementById("lottoMeta").textContent = `뽑은 시각: ${nowStamp()}`;
 
-      // 명언
-      try {
+      try{
         const q = await fetchQuoteFromAPI();
         renderQuote(q);
-        status.textContent = "완료 ✅ (명언: API)";
-      } catch (e) {
+        status.textContent = "완료! ✨ (명언: API)";
+      }catch{
         const q = pickLocalQuote();
         renderQuote(q);
-        status.textContent = "완료 ✅ (명언: 내장)";
+        status.textContent = "완료! ✨ (명언: 내장)";
       }
     }
 
     document.getElementById("btn").addEventListener("click", runAll);
+
+    // 첫 화면 귀여운 기본 세팅(선택): 들어오자마자 한 번 뽑기
+    // runAll();
   </script>
 </body>
 </html>
