@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>로또 추천 + 오늘의 명언</title>
+
+  <!-- 마비노기체(리본코어 감성) -->
+  <style>
+    @font-face {
+      font-family: 'MabinogiClassicR';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2207-01@1.0/MabinogiClassicR.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root{
+      --radius: 18px;
+      --border: 2px solid #222;
+    }
+
+    body{
+      font-family: 'MabinogiClassicR', system-ui, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #faf7ff;
+      color: #111;
+    }
+
+    .wrap{
+      max-width: 720px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card{
+      background: #fff;
+      border: var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.06);
+    }
+
+    h1{
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+
+    .sub{
+      margin: 0;
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    button{
+      font-family: inherit;
+      border: var(--border);
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #fff3ff;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.08);
+      transition: transform 0.06s ease;
+    }
+
+    button:active{ transform: translateY(2px); }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .balls{
+      margin-top: 12px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ball{
+      width: 54px; height: 54px;
+      border-radius: 999px;
+      border: var(--border);
+      display:grid;
+      place-items:center;
+      font-weight: 700;
+      background: #fff;
+      user-select: none;
+    }
+
+    .quote{
+      margin-top: 10px;
+      line-height: 1.6;
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
+
+    .meta{
+      margin-top: 8px;
+      font-size: 13px;
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>🎯 로또 추천 + 오늘의 명언</h1>
+      <p class="sub">버튼 한 번 누르면 6개 번호 추천 + 명언이 매번 새로 바뀌어요 ✨</p>
+      <div class="row" style="margin-top:12px;">
+        <button id="btn">번호 뽑기 + 명언 업데이트</button>
+        <span id="status" class="meta"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0;font-size:18px;">🎱 추천 로또 번호 6개</h2>
+      <div class="balls" id="balls"></div>
+      <div class="meta" id="lottoMeta"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin:0;font-size:18px;">📜 오늘의 명언</h2>
+      <div class="quote" id="quote">버튼을 눌러 명언을 받아보세요 🙂</div>
+      <div class="meta" id="quoteMeta"></div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ 1) 로또 추출: 1~45 중복 없이 6개
+    function drawLotto() {
+      const set = new Set();
+      while (set.size < 6) {
+        set.add(Math.floor(Math.random() * 45) + 1);
+      }
+      return Array.from(set).sort((a,b) => a-b);
+    }
+
+    function renderBalls(nums) {
+      const wrap = document.getElementById("balls");
+      wrap.innerHTML = "";
+      nums.forEach(n => {
+        const div = document.createElement("div");
+        div.className = "ball";
+        div.textContent = n;
+        wrap.appendChild(div);
+      });
+    }
+
+    // ✅ 2) 명언: API 시도 → 실패 시 로컬(내장) 명언
+    const localQuotes = [
+      { content: "오늘의 한 걸음이 내일의 나를 만든다.", author: "익명" },
+      { content: "완벽보다 꾸준함이 더 강하다.", author: "익명" },
+      { content: "작게 시작해도 괜찮아. 멈추지만 않으면 돼.", author: "익명" },
+      { content: "남과 비교하지 말고, 어제의 나와 비교하자.", author: "익명" },
+      { content: "할 수 있는 만큼만이 아니라, 될 때까지 해보자.", author: "익명" },
+      { content: "불안은 준비 신호다. 준비하면 불안이 작아진다.", author: "익명" },
+      { content: "기회는 준비된 사람에게 ‘인식’된다.", author: "익명" },
+      { content: "지금의 선택이 습관이 되고, 습관이 인생이 된다.", author: "익명" }
+      // 👉 여기에 계속 추가 가능 (100개 넣어도 가벼움!)
+    ];
+
+    function pickLocalQuote() {
+      const q = localQuotes[Math.floor(Math.random() * localQuotes.length)];
+      return { content: q.content, author: q.author, source: "local" };
+    }
+
+    // Quotable: 랜덤 영문 명언 (무료)
+    async function fetchQuoteFromAPI() {
+      // api.quotable.io/random 형태로 널리 사용됨 :contentReference[oaicite:1]{index=1}
+      const url = "https://api.quotable.io/random";
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("API 응답 실패");
+      const data = await res.json();
+      return { content: data.content, author: data.author || "Unknown", source: "api:quotable" };
+    }
+
+    function renderQuote(q) {
+      document.getElementById("quote").textContent = `“${q.content}”`;
+      document.getElementById("quoteMeta").textContent =
+        `— ${q.author}   ·   출처: ${q.source === "local" ? "내장(오프라인)" : "Quotable API"}`;
+    }
+
+    function nowStamp() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // ✅ 3) 버튼 동작: 로또 + 명언 동시 업데이트
+    async function runAll() {
+      const status = document.getElementById("status");
+      status.textContent = "업데이트 중…";
+
+      // 로또
+      const nums = drawLotto();
+      renderBalls(nums);
+      document.getElementById("lottoMeta").textContent = `뽑은 시각: ${nowStamp()}`;
+
+      // 명언
+      try {
+        const q = await fetchQuoteFromAPI();
+        renderQuote(q);
+        status.textContent = "완료 ✅ (명언: API)";
+      } catch (e) {
+        const q = pickLocalQuote();
+        renderQuote(q);
+        status.textContent = "완료 ✅ (명언: 내장)";
+      }
+    }
+
+    document.getElementById("btn").addEventListener("click", runAll);
+  </script>
+</body>
+</html>
